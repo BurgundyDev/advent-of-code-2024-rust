@@ -1,5 +1,3 @@
-use std::path::absolute;
-
 advent_of_code::solution!(1);
 
 pub fn part_one(input: &str) -> Option<u32> {
@@ -32,9 +30,9 @@ pub fn part_two(input: &str) -> Option<u32> {
     left_list.sort();
     right_list.sort();
     let mut similarity= 0;
-    for (index, element) in left_list.iter().enumerate()
+    for element in left_list
     {
-        similarity += element * (right_list.iter().filter(|&n| *n == *element).count() as u32);
+        similarity += element * (right_list.iter().filter(|&n| *n == element).count() as u32);
     }
     print!("{}", similarity);
     Some(similarity)
