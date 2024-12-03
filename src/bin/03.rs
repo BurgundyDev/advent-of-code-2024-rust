@@ -13,12 +13,16 @@ pub fn part_one(input: &str) -> Option<u32> {
 
 pub fn part_two(input: &str) -> Option<u32> {
     let regex = Regex::new(r"mul\((\d{1,3}),(\d{1,3})\)").unwrap();
-    let text = input.replace(r"don't\(\)(.*?)do\(\)", "");
-    println!("{}", text);
-    let numbers: i32 = regex.captures_iter(text.as_str()).
-    map(|f| f.get(0).unwrap().as_str()
-    .strip_prefix("mul(").unwrap().strip_suffix(")").unwrap().split(",").
-    map(|f| f.parse().unwrap()).reduce(|a, b| a * b).unwrap())
+    let blockers = Regex::new(r"don't\(\)(.*?)do\(\)").unwrap();
+    let end_blocker = Regex::new(r"don't\(\)(.*)").unwrap();
+    let newline = Regex::new(r"\n").unwrap();
+    let line = newline.replace_all(input, "");
+    let text = blockers.replace_all(&line, "");
+    let fin_text = end_blocker.replace(&text, "");
+    let numbers: i32 = regex.captures_iter(&fin_text)
+    .map(|f| f.get(0).unwrap().as_str()
+    .strip_prefix("mul(").unwrap().strip_suffix(")").unwrap().split(",")
+    .map(|f| f.parse().unwrap()).reduce(|a, b| a * b).unwrap())
     .reduce(|c, d| c + d).unwrap();
     Some(numbers as u32)
 }
