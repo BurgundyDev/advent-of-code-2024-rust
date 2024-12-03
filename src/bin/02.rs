@@ -26,7 +26,7 @@ pub fn part_one(input: &str) -> Option<u32> {
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
-    let mut reports: Vec<Vec<i32>> = input.lines().map(|line| line.split(" ").map(|num| num.parse().unwrap()).collect()).collect();
+    let reports: Vec<Vec<i32>> = input.lines().map(|line| line.split(" ").map(|num| num.parse().unwrap()).collect()).collect();
     let mut safe_reports: u32 = 0;
     let mut safe_indices: Vec<usize> = vec![];
     for (ri, report) in reports.iter().enumerate()
