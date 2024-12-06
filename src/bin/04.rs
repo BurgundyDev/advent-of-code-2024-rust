@@ -1,7 +1,3 @@
-use std::str::Chars;
-
-use regex::Regex;
-
 advent_of_code::solution!(4);
 
 pub fn part_one(input: &str) -> Option<u32> {
