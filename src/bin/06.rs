@@ -1,9 +1,6 @@
-use std::iter::Map;
-
-advent_of_code::solution!(5);
+advent_of_code::solution!(6);
 
 pub fn part_one(input: &str) -> Option<u32> {
-    let rules: Vec<(i32, i32)> = input.lines().filter(|l| l.contains("|")).map(|l| l.split_once("|").unwrap()).map(|n| (n.0.parse().unwrap(), n.1.parse().unwrap())).collect();
     None
 }
 
