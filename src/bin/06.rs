@@ -1,4 +1,4 @@
-use std::{collections::HashSet, result};
+use std::collections::HashSet;
 
 advent_of_code::solution!(6);
 
@@ -65,19 +65,6 @@ pub fn part_one(input: &str) -> Option<u32> {
             }
         }
     }
-    for (ri, row) in labirynth.iter().enumerate()
-    {
-        for (ci, char) in row.iter().enumerate()
-        {
-            if labirynt_move_map.contains(&(ri, ci))
-            {
-                print!("X")
-            } else {
-                print!("{}", char)
-            }
-        }
-        println!()
-    }
 
     Some(labirynt_move_map.len() as u32)
 }
@@ -130,19 +117,6 @@ pub fn part_two(input: &str) -> Option<u32> {
             }
         }
     }
-    for (ri, row) in labirynth.iter().enumerate()
-    {
-        for (ci, char) in row.iter().enumerate()
-        {
-            if labirynt_move_map.contains(&(ri, ci))
-            {
-                print!("X")
-            } else {
-                print!("{}", char)
-            }
-        }
-        println!()
-    }
 
     let mut result: u32 = 0;
     let mut modifiable_labirynth = labirynth.clone();
@@ -152,7 +126,6 @@ pub fn part_two(input: &str) -> Option<u32> {
         modifiable_labirynth[position.0][position.1] = '#';
 
         curr_point = start_point;
-        next_point = (start_point.0 - 1, start_point.1);
 
         direction = Direction::Up;
 
