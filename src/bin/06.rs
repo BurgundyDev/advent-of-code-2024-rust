@@ -1,5 +1,8 @@
+use std::collections::HashSet;
+
 advent_of_code::solution!(6);
 
+#[derive(PartialEq, PartialOrd, Debug)]
 pub enum Direction {
     Up,
     Right,
@@ -33,26 +36,50 @@ pub fn part_one(input: &str) -> Option<u32> {
             }
         }
     }
-    let mut result: u32 = 0;
+    let mut labirynt_move_map: HashSet<(usize, usize)> = HashSet::new();
+    labirynt_move_map.insert(curr_point);
     while next_point.0 < labirynth.len() && next_point.1 < labirynth[0].len()
     {
+        // println!("{:?}", curr_point);
+        // println!("{:?}", next_point);
         match labirynth[next_point.0][next_point.1] {
             '#' => {
                 direction = rotate(direction);
+                match direction {
+                    Direction::Up => next_point = (curr_point.0 - 1, curr_point.1),
+                    Direction::Right => next_point = (curr_point.0, curr_point.1 + 1),
+                    Direction::Down => next_point = (curr_point.0 + 1, curr_point.1),
+                    Direction::Left => next_point = (curr_point.0, curr_point.1 - 1),
+                }
             }
             _ => {
-                result += 1;
                 curr_point = next_point;
+                labirynt_move_map.insert(curr_point);
+                if (curr_point.0 == 0 && direction == Direction::Up) || (curr_point.1 == 0 && direction == Direction::Left) { break; }
                 match direction {
-                    Direction::Up => next_point = (curr_point.0 - 1, curr_point.0),
-                    Direction::Right => next_point = (curr_point.0, curr_point.0 + 1),
-                    Direction::Down => next_point = (curr_point.0 + 1, curr_point.0),
-                    Direction::Left => next_point = (curr_point.0, curr_point.0 - 1),
+                    Direction::Up => next_point = (curr_point.0 - 1, curr_point.1),
+                    Direction::Right => next_point = (curr_point.0, curr_point.1 + 1),
+                    Direction::Down => next_point = (curr_point.0 + 1, curr_point.1),
+                    Direction::Left => next_point = (curr_point.0, curr_point.1 - 1),
                 }
             }
         }
     }
-    Some(result)
+    for (ri, row) in labirynth.iter().enumerate()
+    {
+        for (ci, char) in row.iter().enumerate()
+        {
+            if labirynt_move_map.contains(&(ri, ci))
+            {
+                print!("X")
+            } else {
+                print!("{}", char)
+            }
+        }
+        println!()
+    }
+
+    Some(labirynt_move_map.len() as u32)
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
