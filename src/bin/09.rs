@@ -27,10 +27,7 @@ pub fn part_one(input: &str) -> Option<u32> {
         {
             compressed.push(*block);
         } else {
-            while *uncompressed.last().unwrap() == '.'
-            {
 
-            }
         }
     }
     println!("{:?}", compressed);
