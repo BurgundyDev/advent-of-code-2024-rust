@@ -1,4 +1,13 @@
+use std::collections::HashMap;
+
 advent_of_code::solution!(11);
+
+#[derive(Hash, Debug, PartialEq, Eq)]
+pub struct StoneKey
+{
+    value: u64,
+    depth: u64
+}
 
 pub fn num_digits(number: u64) -> u64 {
     let mut i: u64 = 10;
@@ -10,56 +19,56 @@ pub fn num_digits(number: u64) -> u64 {
     j
 }
 
-pub fn part_one(input: &str) -> Option<u32> {
-    let mut stones: Vec<u64> = input.split(" ").map(|n| n.parse().unwrap()).collect();
-
-    for n in 0..25
+pub fn blink(stone: u64, depth: u64, memory: &mut HashMap<StoneKey, u64>) -> u64 {
+    if memory.contains_key(&StoneKey { value: stone, depth: depth })
     {
-        let mut temp_stones: Vec<u64> = vec![];
-
-        while stones.len() > 0
-        {
-            let mut stone = stones.remove(0);
-
-            if stone == 0 { stone = 1 }
-            else if num_digits(stone) % 2 == 0 {
-                temp_stones.push(stone / (10_u64.pow((num_digits(stone) / 2) as u32)));
-                stone = stone % (10_u64.pow((num_digits(stone) / 2) as u32))
-            } else {
-                stone *= 2024;
-            }
-            temp_stones.push(stone);
-        }
-        // println!("{:?}: {:?}", n, temp_stones);
-        stones = temp_stones;
+        return memory[&StoneKey { value: stone, depth: depth }];
     }
-    Some(stones.len() as u32)
+    let mut result: u64 = 1;
+    if depth == 0 { return result }
+    else if stone == 0 {
+        result = blink(1, depth - 1, memory);
+    }
+    else if num_digits(stone) % 2 == 0 {
+        result = (blink(stone / (10_u64.pow((num_digits(stone) / 2) as u32)), depth - 1, memory) + blink(stone % (10_u64.pow((num_digits(stone) / 2) as u32)), depth - 1, memory))
+    }
+    else {
+        result = blink(stone * 2024, depth - 1, memory)
+    }
+
+    memory.insert(StoneKey { value: stone, depth: depth }, result);
+
+    result
 }
 
-pub fn part_two(input: &str) -> Option<u32> {
-    let mut stones: Vec<u64> = input.split(" ").map(|n| n.parse().unwrap()).collect();
+pub fn part_one(input: &str) -> Option<u64> {
+    let stones: Vec<u64> = input.split(" ").map(|n| n.parse().unwrap()).collect();
 
-    for n in 0..75
+    let mut result: u64 = 0;
+
+    let mut memory: HashMap<StoneKey, u64> = HashMap::new();
+
+    for stone in stones
     {
-        let mut temp_stones: Vec<u64> = vec![];
-
-        while stones.len() > 0
-        {
-            let mut stone = stones.remove(0);
-
-            if stone == 0 { stone = 1 }
-            else if num_digits(stone) % 2 == 0 {
-                temp_stones.push(stone / (10_u64.pow((num_digits(stone) / 2) as u32)));
-                stone = stone % (10_u64.pow((num_digits(stone) / 2) as u32))
-            } else {
-                stone *= 2024;
-            }
-            temp_stones.push(stone);
-        }
-        // println!("{:?}: {:?}", n, temp_stones);
-        stones = temp_stones;
+        result += blink(stone, 25, &mut memory)
     }
-    Some(stones.len() as u32)
+
+    Some(result)
+}
+
+pub fn part_two(input: &str) -> Option<u64> {
+    let stones: Vec<u64> = input.split(" ").map(|n| n.parse().unwrap()).collect();
+
+    let mut result: u64 = 0;
+
+    let mut memory: HashMap<StoneKey, u64> = HashMap::new();
+
+    for stone in stones
+    {
+        result += blink(stone, 75, &mut memory)
+    }
+
+    Some(result)
 }
 
 #[cfg(test)]
@@ -75,6 +84,6 @@ mod tests {
     #[test]
     fn test_part_two() {
         let result = part_two(&advent_of_code::template::read_file("examples", DAY));
-        assert_eq!(result, None);
+        assert_eq!(result, Some(65601038650482));
     }
 }
